@@ -49,5 +49,9 @@ RSpec.describe "Calibration" do
     expect(sample_result).to eq(142)
   end
 
+  it 'solves my own input data' do
+    result = File.readlines('Day01/Spec/day_01_input.txt', chomp:true).sum(0){|i| Calibration.calibration_of_instruction(i)}
+    expect(result).to eq(53921)
+  end
 end
 
