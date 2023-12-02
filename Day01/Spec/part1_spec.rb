@@ -41,5 +41,10 @@ RSpec.describe "Calibration" do
     expect(Calibration.calibration_of_instruction('1abc2')).to eq(12)
   end
 
+  it 'solves provided sample' do
+    sample_result = %w(1abc2 pqr3stu8vwx a1b2c3d4e5f treb7uchet).sum(0){|i| Calibration.calibration_of_instruction(i)}
+    expect(sample_result).to eq(142)
+  end
+
 end
 
