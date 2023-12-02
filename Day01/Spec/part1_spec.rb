@@ -8,7 +8,9 @@ class Calibration
   end
 
   def self.last_digit_of(instruction)
-    ''
+    match = instruction.match(/^\D*(\d+)/)
+
+    match.nil? ? '' : match[1]
   end
 end
 
@@ -22,6 +24,7 @@ RSpec.describe "Calibration" do
 
   it 'return last digit of calibration value' do
     expect(Calibration.last_digit_of('')).to eq('')
+    expect(Calibration.last_digit_of('treb7uchet')).to eq('7')
   end
 end
 
