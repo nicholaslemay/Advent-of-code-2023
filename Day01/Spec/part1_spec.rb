@@ -1,6 +1,10 @@
 
 class Calibration
 
+  def self.calibration_of_instruction(instruction)
+    "#{self.first_digit_of(instruction).to_i}#{self.last_digit_of(instruction)}".to_i
+  end
+
   def self.first_digit_of(instruction)
     self.get_match_from_regex_or_empty(instruction, /^\D*(\d+)/)
   end
@@ -32,5 +36,10 @@ RSpec.describe "Calibration" do
     expect(Calibration.last_digit_of('treb7uchet')).to eq('7')
     expect(Calibration.last_digit_of('1abc2')).to eq('2')
   end
+
+  it 'returns calibration of single instruction' do
+    expect(Calibration.calibration_of_instruction('1abc2')).to eq(12)
+  end
+
 end
 
