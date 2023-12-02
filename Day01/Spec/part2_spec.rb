@@ -34,13 +34,11 @@ class Calibration
     sanitized_string
   end
 
-
   def self.get_match_from_regex_or_empty(string, regexp)
     match = string.match(regexp)
 
     match.nil? ? '' : match[1]
   end
-
 
 end
 
