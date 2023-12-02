@@ -6,11 +6,11 @@ class Calibration
   end
 
   def self.first_digit_of(instruction)
-    self.get_match_from_regex_or_empty(instruction, /^\D*(\d+)/)
+    self.get_match_from_regex_or_empty(instruction, /^\D*(\d)/)
   end
 
   def self.last_digit_of(instruction)
-    self.get_match_from_regex_or_empty(instruction, /(\d+)\D*\Z/)
+    self.get_match_from_regex_or_empty(instruction, /(\d)\D*\Z/)
   end
 
   private
@@ -29,12 +29,15 @@ RSpec.describe "Calibration" do
     expect(Calibration.first_digit_of('')).to eq('')
     expect(Calibration.first_digit_of('1abc2')).to eq('1')
     expect(Calibration.first_digit_of('pqr3stu8vwx')).to eq('3')
+    expect(Calibration.first_digit_of('eight47vrvjlpgcqthree87q')).to eq('4')
+
   end
 
   it 'return last digit of calibration value' do
     expect(Calibration.last_digit_of('')).to eq('')
     expect(Calibration.last_digit_of('treb7uchet')).to eq('7')
     expect(Calibration.last_digit_of('1abc2')).to eq('2')
+    expect(Calibration.last_digit_of('eight47vrvjlpgcqthree39q')).to eq('9')
   end
 
   it 'returns calibration of single instruction' do
