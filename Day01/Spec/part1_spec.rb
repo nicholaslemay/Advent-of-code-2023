@@ -2,16 +2,21 @@
 class Calibration
 
   def self.first_digit_of(instruction)
-    match = instruction.match(/^\D*(\d+)/)
-
-    match.nil? ? '' : match[1]
+    self.get_match_from_regex_or_empty(instruction)
   end
 
   def self.last_digit_of(instruction)
-    match = instruction.match(/^\D*(\d+)/)
+    self.get_match_from_regex_or_empty(instruction)
+  end
+
+  private
+
+  def self.get_match_from_regex_or_empty(string)
+    match = string.match(/^\D*(\d+)/)
 
     match.nil? ? '' : match[1]
   end
+
 end
 
 RSpec.describe "Calibration" do
