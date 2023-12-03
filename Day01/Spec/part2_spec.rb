@@ -3,15 +3,11 @@ class Calibration
 
   def self.calibration_of_instruction(instruction)
     sanitized_instruction = self.sanitize(instruction)
-    "#{self.first_digit_of(sanitized_instruction).to_i}#{self.last_digit_of(sanitized_instruction)}".to_i
+    "#{self.digit_at_position(sanitized_instruction, :first)}#{self.digit_at_position(sanitized_instruction, :last)}".to_i
   end
 
-  def self.first_digit_of(instruction)
-    self.get_match_from_regex_or_empty(instruction, /^\D*(\d)/)
-  end
-
-  def self.last_digit_of(instruction)
-    self.get_match_from_regex_or_empty(instruction, /(\d)\D*\Z/)
+  def self.digit_at_position(instruction, position)
+    instruction.scan(/\d/).send(position) || ''
   end
 
   private
@@ -28,16 +24,8 @@ class Calibration
       "seven" => "s7n",
       "eight" => "e8t",
       "nine" => "n9e",
-    }.each{|k,v|
-      sanitized_string.gsub!( k, v)
-    }
+    }.each{|k,v| sanitized_string.gsub!(k, v) }
     sanitized_string
-  end
-
-  def self.get_match_from_regex_or_empty(string, regexp)
-    match = string.match(regexp)
-
-    match.nil? ? '' : match[1]
   end
 
 end
@@ -45,18 +33,18 @@ end
 RSpec.describe "Calibration" do
 
   it 'return first digit of calibration value' do
-    expect(Calibration.first_digit_of('')).to eq('')
-    expect(Calibration.first_digit_of('1abc2')).to eq('1')
-    expect(Calibration.first_digit_of('pqr3stu8vwx')).to eq('3')
-    expect(Calibration.first_digit_of('ei47vrvjlpgcqthree87q')).to eq('4')
+    expect(Calibration.digit_at_position('', :first)).to eq('')
+    expect(Calibration.digit_at_position('1abc2', :first)).to eq('1')
+    expect(Calibration.digit_at_position('pqr3stu8vwx', :first)).to eq('3')
+    expect(Calibration.digit_at_position('eight47vrvjlpgcqthree87q', :first)).to eq('4')
 
   end
 
   it 'return last digit of calibration value' do
-    expect(Calibration.last_digit_of('')).to eq('')
-    expect(Calibration.last_digit_of('treb7uchet')).to eq('7')
-    expect(Calibration.last_digit_of('1abc2')).to eq('2')
-    expect(Calibration.last_digit_of('ei47vrvjlpgcqthree39q')).to eq('9')
+    expect(Calibration.digit_at_position('', :last)).to eq('')
+    expect(Calibration.digit_at_position('treb7uchet', :last)).to eq('7')
+    expect(Calibration.digit_at_position('1abc2', :last)).to eq('2')
+    expect(Calibration.digit_at_position('eight47vrvjlpgcqthree39q', :last)).to eq('9')
   end
 
   it 'returns calibration of single instruction' do
@@ -79,7 +67,7 @@ RSpec.describe "Calibration" do
 
   it 'solves my own input data' do
     result = File.readlines('Day01/Spec/day_01_input.txt', chomp:true).sum(0){|i| Calibration.calibration_of_instruction(i)}
-    expect(result).to eq(53921)
+    expect(result).to eq(54676)
   end
 
 end
