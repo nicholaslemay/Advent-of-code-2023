@@ -1,9 +1,22 @@
 
+class Game
+  attr_accessor :id
 
-RSpec.describe "Something" do
+  def self.built_from(instruction)
+    game = Game.new
+    game.id = ''
+    game
+  end
 
-  it 'passes' do
-    expect(true).to eq(true)
+
+end
+
+RSpec.describe "Game" do
+
+  describe 'built from record' do
+    it 'has an id' do
+      expect(Game.built_from('Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green').id).to eq('')
+    end
   end
 
 end
