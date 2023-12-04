@@ -79,6 +79,18 @@ RSpec.describe "Game" do
       expect(Game.built_from('Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green').is_possible?(treshold)).to eq(true)
     end
 
+
+    it 'can resolve my riddle' do
+      treshold = {:red=> 12, :green => 13, :blue => 14}
+
+      result = File.readlines('Day02/day_02_input.txt', chomp:true).sum(0) do |i|
+           game = Game.built_from(i)
+           game.is_possible?(treshold) ? game.id.to_i : 0
+        end
+      expect(result).to eq(2239)
+
+    end
+
   end
 
 end
