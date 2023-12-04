@@ -2,20 +2,13 @@
 class GameSet
   attr_accessor :blue, :red, :green
 
-  def initialize
+  def initialize(set_instruction)
     @blue = @green = @red = 0
-  end
-
-  def self.built_from(set_instruction)
-    set = GameSet.new
-
     %w(red green blue).each do |color|
       if(set_instruction =~ /(\d+) #{color}/)
-        set.send("#{color}=", $1.to_i)
+        self.send("#{color}=", $1.to_i)
       end
     end
-
-    set
   end
 end
 
@@ -27,7 +20,7 @@ class Game
     @sets = []
     @id = instruction.scan(/Game (\d+)/)[0][0]
     instruction.split(';').each do |part|
-      @sets << GameSet.built_from(part)
+      @sets << GameSet.new(part)
     end
   end
 
