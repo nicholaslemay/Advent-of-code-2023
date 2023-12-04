@@ -33,6 +33,10 @@ class Game
     @sets = []
   end
 
+  def is_possible?(treshold)
+    sets.all?{|s| s.red <= treshold[:red] && s.blue <= treshold[:blue] && s.green <= treshold[:green] }
+  end
+
   def self.built_from(instruction)
     game = Game.new
     game.id = instruction.scan(/Game (\d+)/)[0][0]
@@ -65,7 +69,18 @@ RSpec.describe "Game" do
       expect(game.sets[0].green).to eq(0)
       expect(game.sets[1].green).to eq(2)
     end
+
+    it 'can say whether a game is valid or not' do
+      treshold = {:red=> 12, :green => 13, :blue => 14}
+      expect(Game.built_from('Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green').is_possible?(treshold)).to eq(true)
+      expect(Game.built_from('Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue').is_possible?(treshold)).to eq(true)
+      expect(Game.built_from('Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red').is_possible?(treshold)).to eq(false)
+      expect(Game.built_from('Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red').is_possible?(treshold)).to eq(false)
+      expect(Game.built_from('Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green').is_possible?(treshold)).to eq(true)
+    end
+
   end
 
 end
+
 
