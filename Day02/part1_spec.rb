@@ -1,4 +1,3 @@
-
 class GameSet
   attr_accessor :blue, :red, :green
 
@@ -13,8 +12,7 @@ class GameSet
 end
 
 class Game
-  attr_accessor :id
-  attr_accessor :sets
+  attr_accessor :id, :sets
 
   def initialize(instruction)
     @sets = []
