@@ -2,7 +2,7 @@
 
 RSpec.describe "Something" do
 
-  it 'fails' do
+  it 'passes' do
     expect(true).to eq(true)
   end
 
