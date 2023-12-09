@@ -9,6 +9,10 @@ class GameSet
       end
     end
   end
+
+  def meets_threshold?(threshold)
+    { red: red, blue: blue, green: green }.all?{|color, value| value <= threshold[color] }
+  end
 end
 
 class Game
@@ -16,14 +20,14 @@ class Game
 
   def initialize(instruction)
     @sets = []
-    @id = instruction.scan(/Game (\d+)/)[0][0]
+    @id = instruction.match(/Game (?<game_id>\d+)/)[:game_id]
     instruction.split(';').each do |part|
       @sets << GameSet.new(part)
     end
   end
 
-  def is_possible?(treshold)
-    sets.all?{|s| s.red <= treshold[:red] && s.blue <= treshold[:blue] && s.green <= treshold[:green] }
+  def is_possible?(threshold)
+    sets.all?{|s| s.meets_threshold?(threshold) }
   end
 
 end

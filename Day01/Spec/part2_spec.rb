@@ -57,12 +57,16 @@ RSpec.describe "Calibration" do
   end
 
   it 'handles instruction containing numbers as string' do
-    expect(Calibration.calibration_of_instruction('two1nine')).to eq(29)
-    expect(Calibration.calibration_of_instruction('eightwothree')).to eq(83)
-    expect(Calibration.calibration_of_instruction('abcone2threexyz')).to eq(13)
-    expect(Calibration.calibration_of_instruction('4nineeightseven2')).to eq(42)
-    expect(Calibration.calibration_of_instruction('zoneight234')).to eq(14)
-    expect(Calibration.calibration_of_instruction('7pqrstsixteen')).to eq(76)
+    {
+      'two1nine' => 29,
+      'eightwothree'=> 83,
+      'abcone2threexyz'=> 13,
+      '4nineeightseven2'=> 42,
+      'zoneight234'=> 14,
+      '7pqrstsixteen'=> 76
+    }.each do |instruction, expected|
+      expect(Calibration.calibration_of_instruction(instruction.dup)).to eq(expected)
+    end
   end
 
   it 'solves my own input data' do
