@@ -4,36 +4,48 @@ class GameSet
   def initialize(set_instruction)
     @blue = @green = @red = 0
     %w(red green blue).each do |color|
-      if set_instruction =~ /(\d+) #{color}/
-        self.send("#{color}=", $1.to_i)
-      end
+      match = /(\d+) #{color}/.match(set_instruction)
+      instance_variable_set("@#{color}", match[1].to_i) if match # Use matched data if color found
     end
   end
 end
 
 class Game
+  COLORS = [:red, :green, :blue].freeze
+
   attr_accessor :id, :sets
 
   def initialize(instruction)
-    @sets = []
-    @id = instruction.scan(/Game (\d+)/)[0][0]
-    instruction.split(';').each do |part|
-      @sets << GameSet.new(part)
-    end
+    @sets = extract_sets(instruction)
+    @id = extract_id(instruction)
   end
 
-  def is_possible?(treshold)
-    sets.all?{|s| s.red <= treshold[:red] && s.blue <= treshold[:blue] && s.green <= treshold[:green] }
+  def is_possible?(threshold)
+    sets.all? { |s| within_threshold?(s, threshold) }
   end
 
   def required_amounts
-    [:red, :green, :blue].to_h { |color|
-      [color, (@sets.collect { |x| x.send(color) }).max]
-    }
+    COLORS.to_h { |color| [color, (@sets.collect { |x| x.send(color) }).max] }
+  end
+
+  private
+
+  def within_threshold?(set, threshold)
+    COLORS.all? { |color| set.send(color) <= threshold[color] }
+  end
+
+  def extract_id(instruction)
+    instruction.scan(/Game (\d+)/)[0][0]
+  end
+
+  def extract_sets(instruction)
+    instruction.split(';').map { |part| GameSet.new(part) }
   end
 end
 
 RSpec.describe "Game" do
+
+  let(:treshold) {{:red=> 12, :green => 13, :blue => 14}}
 
   describe 'built from record' do
     it 'has an id' do
@@ -55,7 +67,6 @@ RSpec.describe "Game" do
     end
 
     it 'can say whether a game is valid or not' do
-      treshold = {:red=> 12, :green => 13, :blue => 14}
       expect(Game.new('Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green').is_possible?(treshold)).to eq(true)
       expect(Game.new('Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue').is_possible?(treshold)).to eq(true)
       expect(Game.new('Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red').is_possible?(treshold)).to eq(false)
@@ -64,7 +75,6 @@ RSpec.describe "Game" do
     end
 
     it 'can resolve my riddle' do
-      treshold = {:red=> 12, :green => 13, :blue => 14}
 
       result = File.readlines('Day02/day_02_input.txt', chomp:true).sum(0) do |i|
            game = Game.new(i)
